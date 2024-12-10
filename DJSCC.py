@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-import WC
+from WC import *
 
 
 class Deep_JSCC(nn.Module):
@@ -50,7 +50,7 @@ class Deep_JSCC(nn.Module):
         x_En = self.En_Conv_layer4(x_En)
         x_En = self.En_Conv_layer5(x_En)
 
-        Channel_output = WC.wireless_channel(x_En, Channel, Power, SNR, **kwargs)
+        Channel_output = wireless_channel(x_En, Channel, Power, SNR, **kwargs)
 
         x_De = self.De_TransConv_layer1(Channel_output)
         x_De = self.De_TransConv_layer2(x_De)
@@ -59,3 +59,9 @@ class Deep_JSCC(nn.Module):
         Reconstructed_image = self.De_TransConv_layer5(x_De)
 
         return Reconstructed_image
+
+x = torch.randn(64, 3, 32, 32)
+
+model = Deep_JSCC(filter_k=4)  # k/n = 1/12 -----> filter_k = 4
+
+out = model(Inpute_image=x, Channel='awgn', Power=1, SNR=19)
